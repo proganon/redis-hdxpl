@@ -1,3 +1,33 @@
+/*  File:    srv/consume.pl
+    Author:  Roy Ratcliffe
+    Created: Oct  2 2022
+    Purpose: Consume Redis Streams
+
+Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
+
+Permission is hereby granted, free of charge,  to any person obtaining a
+copy  of  this  software  and    associated   documentation  files  (the
+"Software"), to deal in  the   Software  without  restriction, including
+without limitation the rights to  use,   copy,  modify,  merge, publish,
+distribute, sublicense, and/or sell  copies  of   the  Software,  and to
+permit persons to whom the Software is   furnished  to do so, subject to
+the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT  WARRANTY OF ANY KIND, EXPRESS
+OR  IMPLIED,  INCLUDING  BUT  NOT   LIMITED    TO   THE   WARRANTIES  OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR   PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS  OR   COPYRIGHT  HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY,  WHETHER   IN  AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM,  OUT  OF   OR  IN  CONNECTION  WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+
+:- load_files([key, tcp, hdx], [if(not_loaded)]).
+
 :- listen(redis_consume(Key, Data, Context), consume(Key, Data, Context)).
 
 consume(Key, Data, Context) :-
@@ -21,8 +51,6 @@ Notice that the consumer can access the same connection alias. The
 context carries the Redis connection ready for re-use.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-:- load_files([key, tcp, hdx], [if(not_loaded)]).
 
 command(Data, Context) :-
     get_dict(command, Data, Command),

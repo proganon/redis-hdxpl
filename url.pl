@@ -1,7 +1,7 @@
-/*  File:    srv/key.pl
+/*  File:    srv/url.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: Get TCP Address for Key
+    Purpose: Convert URL to Protocol, Host and Port
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 
@@ -26,11 +26,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-:- load_files(url, [if(not_loaded)]).
-
-:- setting(address_key, atom, env('ADDRESS_KEY', 'hdx:tcp'), '').
-
-key_address(Key, Address) :-
-    setting(address_key, AddressKey),
-    redis(hdx, hget(AddressKey, Key), URL),
-    url_address(URL, tcp, Address).
+url_address(URL, Protocol, Host:Port) :-
+    parse_url(URL, Attributes),
+    memberchk(protocol(Protocol), Attributes),
+    memberchk(host(Host), Attributes),
+    memberchk(port(Port), Attributes).
