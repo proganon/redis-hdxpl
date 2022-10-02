@@ -2,6 +2,8 @@
 :- setting(consumer, atom, env('HOSTNAME'), '').
 :- setting(key, atom, env('KEY', hdx), '').
 
+:- load_files(redis, [if(not_loaded)]).
+
 :- initialization(up, main).
 
 up :-
