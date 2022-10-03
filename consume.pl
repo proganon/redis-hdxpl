@@ -54,29 +54,35 @@ context carries the Redis connection ready for re-use.
 
 command(Data, Context) :-
     get_dict(command, Data, Command),
-    get_dict(key, Data, Key),
+    get_dict(tcp, Data, Key),
     key_address(Key, Address),
     !,
-    check_out_tcp(Address, StreamPair),
-    hdx_command(StreamPair, Command),
-    check_in_tcp(Address, StreamPair),
-    xadd(Context.redis, Key, _, _{key:Context.key,
-                                  id:Context.message,
-                                  group:Context.group,
-                                  consumer:Context.consumer}).
+    tcp_command(Address, Command),
+    (   get_dict(add, Data, AddKey)
+    ->  true
+    ;   AddKey = Key
+    ),
+    xadd(Context.redis, AddKey, _,
+         Data.put(_{key:Context.key,
+                    id:Context.message,
+                    group:Context.group,
+                    consumer:Context.consumer})).
 command(_, _).
 
 query(Data, Context) :-
     get_dict(query, Data, Query),
-    get_dict(key, Data, Key),
+    get_dict(tcp, Data, Key),
     key_address(Key, Address),
     !,
-    check_out_tcp(Address, StreamPair),
-    hdx_query(StreamPair, Query, Reply),
-    check_in_tcp(Address, StreamPair),
-    xadd(Context.redis, Key, _, _{reply:Reply,
-                                  key:Context.key,
-                                  id:Context.message,
-                                  group:Context.group,
-                                  consumer:Context.consumer}).
+    tcp_query(Address, Query, Reply),
+    (   get_dict(add, Data, AddKey)
+    ->  true
+    ;   AddKey = Key
+    ),
+    xadd(Context.redis, AddKey, _,
+         Data.put(_{reply:Reply,
+                    key:Context.key,
+                    id:Context.message,
+                    group:Context.group,
+                    consumer:Context.consumer})).
 query(_, _).

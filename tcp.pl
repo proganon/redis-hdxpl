@@ -26,6 +26,20 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+tcp_command(Address, Command) :-
+    check_out_tcp(Address, StreamPair),
+    hdx_command(StreamPair, Command),
+    check_in_tcp(Address, StreamPair).
+
+tcp_query(Address, Query, Reply) :-
+    check_out_tcp(Address, StreamPair),
+    hdx_query(StreamPair, Query, Reply),
+    check_in_tcp(Address, StreamPair).
+
+		 /*******************************
+		 *           TCP Pool           *
+		 *******************************/
+
 :- volatile tcp_pool/2.
 :- dynamic tcp_pool/2.
 
