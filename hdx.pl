@@ -27,6 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 :- setting(query_time_out, number, env('QUERY_TIME_OUT', 3.0), '').
+:- setting(nl_flush, boolean, env('NL_FLUSH', true), '').
 
 hdx_command(StreamPair, Command) :-
     stream_pair(StreamPair, _, Out),
@@ -42,9 +43,27 @@ hdx(StreamPair, Term, Codes, TimeOut) :-
     hdx(Out, Term),
     hdx(In, Codes, TimeOut).
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Some protocols may require a newline before the flush. Two options
+exist in such cases. First, include a new-line terminator in all
+outbound messages. That will work but clutters up the command and query
+streams with redundant newlines. The second option implies the
+terminating newline for all transmissions. The protocol always adds a
+newline before a flush, even if streaming includes a newline in the
+transmission command or query; in those instances the TCP server sees a
+double newline. For this reason, the newline flushing step depends on a
+setting `nl_flush` which writes a newline in whatever form the stream
+defines before it flushes the output stream.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 hdx(Out, Term) :-
     write(Out, Term),
-    nl(Out),
+    (   setting(nl_flush, true)
+    ->  nl(Out)
+    ;   true
+    ),
     flush_output(Out).
 
 hdx(In, Codes, TimeOut) :-
