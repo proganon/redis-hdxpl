@@ -8,6 +8,17 @@ Run like this, for example:
 ```bash
 docker run --rm -it -e REDIS_GROUP=hdx -e REDIS_KEYS="['hdx:command','hdx:query']" -e ADDRESS_KEY="hdx:tcp" $(docker build -q .)
 ```
+Once running, add a query using:
+```prolog
+?- xadd(default, hdx:query, A, _{tcp:localhost, query:"hello world?"}).
+A = 1665333237268-0.
+```
+Variable `A` unifies with the new stream identifier. Add a command using:
+```prolog
+ xadd(default, hdx:command, A, _{tcp:localhost, command:"hello world"}).
+A = 1665333095023-0.
+```
+Note that the command and query streams require command and query fields respectively.
 
 ## Redis URL
 
