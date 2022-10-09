@@ -52,6 +52,13 @@ context carries the Redis connection ready for re-use.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+:- setting(command_field, atom,
+           env('COMMAND_FIELD', command), 'Field name of command').
+:- setting(query_field, atom,
+           env('QUERY_FIELD', query), 'Field name of query').
+:- setting(tcp_field, atom,
+           env('TCP_FIELD', tcp), 'Field name of TCP').
+
 command(Data, Context) :-
     get_dict(command, Data, Command),
     get_dict(tcp, Data, Key),
