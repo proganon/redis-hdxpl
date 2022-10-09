@@ -42,11 +42,15 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 :- listen(redis_consume(Key, Data, Context), consume(Key, Data, Context)).
 
 consume(Key, Data, Context) :-
-    sub_atom(Key, _, _, 0, ':command'),
+    setting(command_field, CommandField),
+    atom_concat(:, CommandField, KeySuffix),
+    sub_atom(Key, _, _, 0, KeySuffix),
     !,
     command(Data, Context.put(key, Key)).
 consume(Key, Data, Context) :-
-    sub_atom(Key, _, _, 0, ':query'),
+    setting(query_field, QueryField),
+    atom_concat(:, QueryField, KeySuffix),
+    sub_atom(Key, _, _, 0, KeySuffix),
     !,
     query(Data, Context.put(key, Key)).
 
