@@ -1,7 +1,7 @@
 /*  File:    srv/consume.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: Consume Redis Streams
+    Purpose: Consumes Redis Streams by Group
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 

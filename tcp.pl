@@ -1,7 +1,7 @@
 /*  File:    srv/tcp.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: TCP Stream Pooling
+    Purpose: Pools TCP Streams by Address
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 

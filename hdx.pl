@@ -1,7 +1,7 @@
 /*  File:    srv/hdx.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: Half-Duplex Streaming
+    Purpose: Streams Half-Duplex TCP
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 
