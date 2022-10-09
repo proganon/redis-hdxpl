@@ -26,6 +26,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+:- autoload(library(broadcast), [listen/2]).
+:- autoload(library(redis_streams), [xadd/4]).
+:- use_module(library(settings), [setting/4, setting/2]).
+
 :- load_files([key, tcp, hdx], [if(not_loaded)]).
 
 :- listen(redis_consume(Key, Data, Context), consume(Key, Data, Context)).
