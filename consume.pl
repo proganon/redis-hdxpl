@@ -60,8 +60,10 @@ context carries the Redis connection ready for re-use.
            env('TCP_FIELD', tcp), 'Field name of TCP').
 
 command(Data, Context) :-
-    get_dict(command, Data, Command),
-    get_dict(tcp, Data, Key),
+    setting(command_field, CommandField),
+    get_dict(CommandField, Data, Command),
+    setting(tcp_field, TCPField),
+    get_dict(TCPField, Data, Key),
     key_address(Key, Address),
     !,
     tcp_command(Address, Command),
@@ -77,8 +79,10 @@ command(Data, Context) :-
 command(_, _).
 
 query(Data, Context) :-
-    get_dict(query, Data, Query),
-    get_dict(tcp, Data, Key),
+    setting(query_field, QueryField),
+    get_dict(QueryField, Data, Query),
+    setting(tcp_field, TCPField),
+    get_dict(TCPField, Data, Key),
     key_address(Key, Address),
     !,
     tcp_query(Address, Query, Reply),
