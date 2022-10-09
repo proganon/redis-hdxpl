@@ -32,6 +32,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 :- load_files([key, tcp, hdx], [if(not_loaded)]).
 
+:- setting(command_field, atom,
+           env('COMMAND_FIELD', command), 'Field name of command').
+:- setting(query_field, atom,
+           env('QUERY_FIELD', query), 'Field name of query').
+:- setting(tcp_field, atom,
+           env('TCP_FIELD', tcp), 'Field name of TCP').
+
 :- listen(redis_consume(Key, Data, Context), consume(Key, Data, Context)).
 
 consume(Key, Data, Context) :-
@@ -55,13 +62,6 @@ Notice that the consumer can access the same connection alias. The
 context carries the Redis connection ready for re-use.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-:- setting(command_field, atom,
-           env('COMMAND_FIELD', command), 'Field name of command').
-:- setting(query_field, atom,
-           env('QUERY_FIELD', query), 'Field name of query').
-:- setting(tcp_field, atom,
-           env('TCP_FIELD', tcp), 'Field name of TCP').
 
 command(Data, Context) :-
     setting(command_field, CommandField),
