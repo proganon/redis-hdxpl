@@ -1,7 +1,7 @@
 /*  File:    srv/consume.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: Consume Redis Streams
+    Purpose: Consumes Redis Streams by Group
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 
@@ -26,16 +26,31 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+:- autoload(library(broadcast), [listen/2]).
+:- autoload(library(redis_streams), [xadd/4]).
+:- use_module(library(settings), [setting/4, setting/2]).
+
 :- load_files([key, tcp, hdx], [if(not_loaded)]).
+
+:- setting(command_field, atom,
+           env('COMMAND_FIELD', command), 'Field name of command').
+:- setting(query_field, atom,
+           env('QUERY_FIELD', query), 'Field name of query').
+:- setting(tcp_field, atom,
+           env('TCP_FIELD', tcp), 'Field name of TCP').
 
 :- listen(redis_consume(Key, Data, Context), consume(Key, Data, Context)).
 
 consume(Key, Data, Context) :-
-    sub_atom(Key, _, _, 0, ':command'),
+    setting(command_field, CommandField),
+    atom_concat(:, CommandField, KeySuffix),
+    sub_atom(Key, _, _, 0, KeySuffix),
     !,
     command(Data, Context.put(key, Key)).
 consume(Key, Data, Context) :-
-    sub_atom(Key, _, _, 0, ':query'),
+    setting(query_field, QueryField),
+    atom_concat(:, QueryField, KeySuffix),
+    sub_atom(Key, _, _, 0, KeySuffix),
     !,
     query(Data, Context.put(key, Key)).
 
@@ -53,8 +68,10 @@ context carries the Redis connection ready for re-use.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 command(Data, Context) :-
-    get_dict(command, Data, Command),
-    get_dict(tcp, Data, Key),
+    setting(command_field, CommandField),
+    get_dict(CommandField, Data, Command),
+    setting(tcp_field, TCPField),
+    get_dict(TCPField, Data, Key),
     key_address(Key, Address),
     !,
     tcp_command(Address, Command),
@@ -70,8 +87,10 @@ command(Data, Context) :-
 command(_, _).
 
 query(Data, Context) :-
-    get_dict(query, Data, Query),
-    get_dict(tcp, Data, Key),
+    setting(query_field, QueryField),
+    get_dict(QueryField, Data, Query),
+    setting(tcp_field, TCPField),
+    get_dict(TCPField, Data, Key),
     key_address(Key, Address),
     !,
     tcp_query(Address, Query, Reply),

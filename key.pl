@@ -1,7 +1,7 @@
 /*  File:    srv/key.pl
     Author:  Roy Ratcliffe
     Created: Oct  2 2022
-    Purpose: Get TCP Address for Key
+    Purpose: Maps Keys to TCP Addresses
 
 Copyright (c) 2022, Roy Ratcliffe, Northumberland, United Kingdom
 
@@ -26,11 +26,12 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-:- load_files(url, [if(not_loaded)]).
+:- use_module(url/addresses).
 
-:- setting(address_key, atom, env('ADDRESS_KEY', 'hdx:tcp'), '').
+:- setting(address_key, atom,
+           env('ADDRESS_KEY'), 'Hash key for TCP addresses').
 
 key_address(Key, Address) :-
     setting(address_key, AddressKey),
-    redis(hdx, hget(AddressKey, Key), URL),
+    redis(default, hget(AddressKey, Key), URL),
     url_address(URL, tcp, Address).
